@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaskMaster - 我的任务管理器</title>
+  <title>TaskMaster - Personal Task Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
@@ -14,7 +14,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
   <div class="max-w-4xl mx-auto p-6">
-    <!-- 头部 -->
+    <!-- Header -->
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-4xl font-bold flex items-center gap-3">
         <i class="fas fa-tasks text-blue-600"></i> TaskMaster
@@ -24,36 +24,41 @@
       </button>
     </div>
 
-    <!-- 添加任务 -->
+    <!-- Add Task -->
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 mb-8">
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <input id="title" type="text" placeholder="任务标题" class="col-span-2 p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
-        <input id="desc" type="text" placeholder="描述（可选）" class="p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
+        <input id="title" type="text" placeholder="Task Title" class="col-span-2 p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
+        <input id="desc" type="text" placeholder="Description (optional)" class="p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
         <input id="due" type="date" class="p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
         <select id="priority" class="p-4 rounded-2xl border focus:outline-none focus:border-blue-500">
-          <option value="low">低</option>
-          <option value="medium" selected>中</option>
-          <option value="high">高</option>
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
         </select>
         <button id="add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl flex items-center justify-center gap-2">
-          <i class="fas fa-plus"></i> 添加任务
+          <i class="fas fa-plus"></i> Add Task
         </button>
       </div>
     </div>
 
-    <!-- 过滤器 -->
+    <!-- Filters -->
     <div class="flex gap-3 mb-6 flex-wrap">
-      <button data-filter="all" class="filter-btn active px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">全部</button>
-      <button data-filter="active" class="filter-btn px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">未完成</button>
-      <button data-filter="completed" class="filter-btn px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">已完成</button>
-      <input id="search" type="text" placeholder="搜索任务..." class="flex-1 p-3 rounded-2xl border">
+      <button data-filter="all" class="filter-btn active px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">All</button>
+      <button data-filter="active" class="filter-btn px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">Active</button>
+      <button data-filter="completed" class="filter-btn px-6 py-2 rounded-2xl bg-white dark:bg-gray-800 shadow">Completed</button>
+      <input id="search" type="text" placeholder="Search tasks..." class="flex-1 p-3 rounded-2xl border">
     </div>
 
-    <!-- 任务列表 -->
+    <!-- Task List -->
     <ul id="task-list" class="space-y-4"></ul>
 
-    <!-- 统计 -->
+    <!-- Stats -->
     <div id="stats" class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400"></div>
+
+    <!-- Footer (personal touch) -->
+    <footer class="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
+      Built by Zishao Zhou · Personal Project for UK University Applications · 2025
+    </footer>
   </div>
 
   <script>
@@ -103,7 +108,7 @@
               <span class="px-3 py-1 text-xs rounded-full 
                 ${task.priority === 'high' ? 'bg-red-100 text-red-700' : 
                   task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}">
-                ${task.priority === 'high' ? '🔥 高' : task.priority === 'medium' ? '⭐ 中' : '🟢 低'}
+                ${task.priority === 'high' ? '🔥 High' : task.priority === 'medium' ? '⭐ Medium' : '🟢 Low'}
               </span>
               ${task.due ? `<span class="text-sm ${isOverdue ? 'overdue' : ''}">
                 📅 ${task.due}
@@ -114,16 +119,14 @@
           <button class="delete-btn text-red-500 hover:text-red-700 text-2xl">×</button>
         `;
 
-        // 复选框
         li.querySelector('input[type=checkbox]').addEventListener('change', () => {
           tasks[index].completed = !tasks[index].completed;
           saveTasks();
           renderTasks();
         });
 
-        // 删除
         li.querySelector('.delete-btn').addEventListener('click', () => {
-          if (confirm('确定删除这个任务吗？')) {
+          if (confirm('Are you sure you want to delete this task?')) {
             tasks.splice(index, 1);
             saveTasks();
             renderTasks();
@@ -133,15 +136,13 @@
         list.appendChild(li);
       });
 
-      // 更新统计
       const remaining = tasks.filter(t => !t.completed).length;
-      document.getElementById('stats').innerHTML = `✅ 已完成 ${tasks.length - remaining} 个任务 | 剩余 ${remaining} 个任务`;
+      document.getElementById('stats').innerHTML = `Completed ${tasks.length - remaining} tasks | ${remaining} tasks remaining`;
     };
 
-    // 添加任务
     document.getElementById('add-btn').addEventListener('click', () => {
       const title = document.getElementById('title').value.trim();
-      if (!title) return alert('请输入任务标题！');
+      if (!title) return alert('Please enter a task title!');
 
       tasks.push({
         title,
@@ -155,13 +156,11 @@
       saveTasks();
       renderTasks();
 
-      // 清空输入
       document.getElementById('title').value = '';
       document.getElementById('desc').value = '';
       document.getElementById('due').value = '';
     });
 
-    // 过滤器
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-blue-600', 'text-white'));
@@ -171,10 +170,8 @@
       });
     });
 
-    // 搜索实时过滤
     document.getElementById('search').addEventListener('input', renderTasks);
 
-    // 深色模式
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
@@ -183,7 +180,6 @@
       icon.classList.toggle('fa-sun');
     });
 
-    // 初始化
     loadTasks();
   </script>
 </body>
